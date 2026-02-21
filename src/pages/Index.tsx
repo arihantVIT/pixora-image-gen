@@ -2,6 +2,7 @@ import { useState } from "react";
 import ChatForm from "@/components/ChatForm";
 import ResponsePanel from "@/components/ResponsePanel";
 import { Sparkles } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const WEBHOOK_URL =
   "https://n8n.srv1333057.hstgr.cloud/webhook/8af48b14-3217-4593-8662-084d8a28ffc4/chat";
@@ -65,6 +66,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-4 py-12 sm:py-20">
+        <div className="flex justify-end mb-4">
+          <ThemeToggle />
+        </div>
         <header className="mb-10 text-center">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="h-4 w-4" />
