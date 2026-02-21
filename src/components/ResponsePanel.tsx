@@ -26,8 +26,9 @@ function parseOutput(value: string) {
         key={key++}
         src={match[2]}
         alt={match[1] || "Generated image"}
-        className="mt-3 w-full rounded-lg border border-border"
+        className="mt-3 max-w-md w-full rounded-lg border border-border shadow-sm object-contain"
         loading="lazy"
+        style={{ imageRendering: "auto" }}
       />
     );
     lastIndex = imgRegex.lastIndex;
