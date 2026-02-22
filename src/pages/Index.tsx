@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import ResponsePanel from "@/components/ResponsePanel";
 import { Send, Loader2, Bot, User } from "lucide-react";
+import pixoraLogo from "@/assets/pixora-logo.png";
 
 const WEBHOOK_URL =
   "https://n8n.srv1333057.hstgr.cloud/webhook/8af48b14-3217-4593-8662-084d8a28ffc4/chat";
@@ -107,11 +108,9 @@ const Index = () => {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Bot className="h-4 w-4" />
-          </div>
+          <img src={pixoraLogo} alt="Pixora" className="h-8 w-8 rounded-full object-cover" />
           <div>
-            <h1 className="text-sm font-semibold text-foreground">AI Assistant</h1>
+            <h1 className="text-sm font-semibold text-foreground">Pixora</h1>
             <p className="text-xs text-muted-foreground">Online</p>
           </div>
         </div>
@@ -124,9 +123,9 @@ const Index = () => {
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                <Bot className="h-7 w-7 text-primary" />
-              </div>
-              <h2 className="text-lg font-semibold text-foreground">How can I help you?</h2>
+              <img src={pixoraLogo} alt="Pixora" className="h-14 w-14 rounded-full object-cover" />
+            </div>
+            <h2 className="text-lg font-semibold text-foreground">How can I help you?</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 Send a message or request an AI-generated image
               </p>
@@ -139,16 +138,16 @@ const Index = () => {
               className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
             >
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden ${
                   msg.role === "user"
                     ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground"
+                    : ""
                 }`}
               >
                 {msg.role === "user" ? (
                   <User className="h-4 w-4" />
                 ) : (
-                  <Bot className="h-4 w-4" />
+                  <img src={pixoraLogo} alt="Pixora" className="h-8 w-8 object-cover" />
                 )}
               </div>
 
