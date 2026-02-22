@@ -8,6 +8,22 @@ interface Props {
   onRetry: () => void;
 }
 
+// Upgrade googleusercontent thumbnail URLs to full resolution
+function upgradeImageUrl(url: string): string {
+  // Replace =s220 (or any =sNNN) with =s0 for full resolution
+  return url.replace(/=s\d+$/, "=s0");
+}
+
+// Convert Google Drive download URL to direct link that won't be blocked
+function fixDownloadUrl(url: string): string {
+  // Convert drive.google.com/uc?id=XXX&export=download to direct link
+  const driveMatch = url.match(/drive\.google\.com\/uc\?id=([^&]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/file/d/${driveMatch[1]}/view`;
+  }
+  return url;
+}
+
 function parseOutput(value: string) {
   const parts: React.ReactNode[] = [];
 
@@ -24,7 +40,7 @@ function parseOutput(value: string) {
     parts.push(
       <img
         key={key++}
-        src={match[2]}
+        src={upgradeImageUrl(match[2])}
         alt={match[1] || "Generated image"}
         className="mt-3 max-w-md w-full rounded-lg border border-border shadow-sm object-contain"
         loading="lazy"
@@ -48,7 +64,7 @@ function parseOutput(value: string) {
       parts.push(
         <a
           key={key++}
-          href={linkMatch[1]}
+          href={fixDownloadUrl(linkMatch[1])}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary underline underline-offset-2 hover:text-primary/80"
