@@ -1,73 +1,132 @@
-# Welcome to your Lovable project
+# 🎨 Pixora AI
 
-## Project info
+> A conversational AI assistant with on-demand AI image generation, built on n8n.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Created by:** Arihant Pratap Singh — VIT Vellore
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🧠 What is Pixora AI?
 
-**Use Lovable**
+Pixora AI is an intelligent chatbot that combines natural conversation (powered by Google Gemini) with AI image generation (powered by Cloudflare Workers AI — Flux Schnell). Users can chat normally, and whenever they request an image, Pixora generates it and delivers a shareable link — all within the same chat interface.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+working link - https://pixora-image-gen.lovable.app 
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## ✨ Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- 💬 **Natural Conversation** — Responds to any question or message conversationally
+- 🖼️ **AI Image Generation** — Generates images from text prompts using Flux Schnell
+- ☁️ **Auto Cloud Storage** — Images are automatically uploaded to Google Drive and shared publicly
+- 🔗 **Instant Links** — Returns a thumbnail preview and a direct download link
+- 🛡️ **Size Validation** — Rejects requests exceeding 1 megapixel (1024×1024) to prevent API errors
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🏗️ Architecture
+<img width="1790" height="847" alt="image" src="https://github.com/user-attachments/assets/bc7f65c8-2118-4e17-b29f-4d8666eb977d" />
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+Pixora AI runs on two n8n workflows:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 1. Main Workflow
+```
+Chat Trigger → Edit Fields → AI Agent (Gemini) → [Tool: Subworkflow]
 ```
 
-**Edit a file directly in GitHub**
+| Node | Role |
+|---|---|
+| **Chat Trigger** | Receives user messages via public webhook |
+| **Edit Fields** | Maps incoming message to `chatInput` |
+| **AI Agent** | Gemini-powered agent; decides whether to call image tool or respond in text |
+| **Subworkflow Tool** | Called only when image generation is requested |
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 2. Image Generation Subworkflow
+```
+Trigger → Setup → Size Check → Cloudflare API → Convert to File → Google Drive Upload → Share → Return Links
+```
 
-**Use GitHub Codespaces**
+| Node | Role |
+|---|---|
+| **Setup Workflow** | Sets defaults (1024×1024, random seed, 4 steps) |
+| **Check Image Size** | Blocks requests > 1 megapixel |
+| **Get Accounts** | Fetches Cloudflare Account ID dynamically |
+| **Get Flux Schnell Image** | Calls Cloudflare Workers AI to generate the image |
+| **Convert to File** | Converts base64 result to binary file |
+| **Upload File** | Uploads to a designated Google Drive folder |
+| **Share File** | Sets public read permissions |
+| **Edit Fields** | Returns `thumbnailLink` and `webContentLink` to main workflow |
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🔧 Tech Stack
 
-This project is built with:
+| Component | Technology |
+|---|---|
+| Workflow Automation | [n8n](https://n8n.io) |
+| LLM / Chat | Google Gemini (via n8n LangChain node) |
+| Image Generation | Cloudflare Workers AI — `flux-1-schnell` |
+| File Storage | Google Drive |
+| Interface | n8n Public Chat Widget |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 🚀 Setup Guide
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Prerequisites
+- n8n instance (cloud or self-hosted)
+- Cloudflare account with Workers AI enabled
+- Google account with Drive API access
 
-## Can I connect a custom domain to my Lovable project?
+### Steps
 
-Yes, you can!
+1. **Import both workflows** into your n8n instance.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+2. **Configure Cloudflare credentials**
+   - Create a Cloudflare API token with permissions:
+     - `Accounts → Account Settings (Read)`
+     - `Workers AI (Edit)`
+   - Add it as a **Bearer Auth** credential in n8n.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+3. **Configure Google Drive credentials**
+   - Set up Google Drive OAuth2 in n8n.
+   - Update the **Upload File** node with your target folder ID.
+
+4. **Activate both workflows** — subworkflow first, then the main workflow.
+
+5. **Share the chat link** from the Chat Trigger node.
+
+---
+
+## 💬 Usage Examples
+
+| User Input | Pixora Response |
+|---|---|
+| `"What is machine learning?"` | Answers conversationally, no image generated |
+| `"Generate an image of a sunset over mountains"` | Generates and returns image link |
+| `"Give me a picture of a cyberpunk city at night"` | Generates and returns image link |
+| `"Who made you?"` | *"I was created by Arihant Pratap Singh, student at VIT Vellore"* |
+
+---
+
+## ⚠️ Limitations
+
+- Max image size: **1024 × 1024 px** (1 megapixel)
+- Image generation uses Cloudflare's free-tier Workers AI quota
+- Response time depends on Cloudflare and Google Drive API latency
+
+---
+
+## 📁 Project Structure
+
+```
+pixora-ai/
+├── main-workflow.json        # AI Agent + Chat Trigger
+└── subworkflow-flux.json     # Image generation pipeline
+```
+
+---
+
+*Built with ❤️ using n8n, Cloudflare Workers AI, and Google Gemini*
