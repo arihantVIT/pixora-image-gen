@@ -1,4 +1,5 @@
 import { AlertCircle, Loader2, ExternalLink } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Props {
   status: "loading" | "success" | "error";
@@ -16,61 +17,6 @@ function fixDownloadUrl(url: string): string {
     return `https://drive.google.com/file/d/${driveMatch[1]}/view`;
   }
   return url;
-}
-
-function parseOutput(value: string) {
-  const parts: React.ReactNode[] = [];
-  const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  let key = 0;
-
-  while ((match = imgRegex.exec(value)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(<span key={key++}>{value.slice(lastIndex, match.index)}</span>);
-    }
-    parts.push(
-      <img
-        key={key++}
-        src={upgradeImageUrl(match[2])}
-        alt={match[1] || "Generated image"}
-        className="mt-2 max-w-xs w-full rounded-lg shadow-sm object-contain"
-        loading="lazy"
-      />
-    );
-    lastIndex = imgRegex.lastIndex;
-  }
-
-  const remaining = value.slice(lastIndex);
-  if (remaining) {
-    const linkRegex = /Full image:\s*(https?:\/\/[^\s]+)/g;
-    let linkLast = 0;
-    let linkMatch: RegExpExecArray | null;
-
-    while ((linkMatch = linkRegex.exec(remaining)) !== null) {
-      if (linkMatch.index > linkLast) {
-        parts.push(<span key={key++}>{remaining.slice(linkLast, linkMatch.index)}</span>);
-      }
-      parts.push(
-        <a
-          key={key++}
-          href={fixDownloadUrl(linkMatch[1])}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-primary underline underline-offset-2 hover:text-primary/80"
-        >
-          Full image <ExternalLink className="h-3 w-3" />
-        </a>
-      );
-      linkLast = linkRegex.lastIndex;
-    }
-
-    if (linkLast < remaining.length) {
-      parts.push(<span key={key++}>{remaining.slice(linkLast)}</span>);
-    }
-  }
-
-  return parts;
 }
 
 const ResponsePanel = ({ status, content, error }: Props) => {
@@ -93,8 +39,31 @@ const ResponsePanel = ({ status, content, error }: Props) => {
   }
 
   return (
-    <div className="whitespace-pre-wrap">
-      {parseOutput(content)}
+    <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+      <ReactMarkdown
+        components={{
+          img: ({ src, alt }) => (
+            <img
+              src={upgradeImageUrl(src || "")}
+              alt={alt || "Generated image"}
+              className="mt-2 max-w-xs w-full rounded-lg shadow-sm object-contain"
+              loading="lazy"
+            />
+          ),
+          a: ({ href, children }) => (
+            <a
+              href={fixDownloadUrl(href || "")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              {children} <ExternalLink className="h-3 w-3" />
+            </a>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 };
