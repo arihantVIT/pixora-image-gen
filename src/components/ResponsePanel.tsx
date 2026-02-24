@@ -1,5 +1,8 @@
 import { AlertCircle, Loader2, ExternalLink } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 interface Props {
   status: "loading" | "success" | "error";
@@ -41,6 +44,8 @@ const ResponsePanel = ({ status, content, error }: Props) => {
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none break-words [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
       <ReactMarkdown
+        remarkPlugins={[remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={{
           img: ({ src, alt }) => (
             <img
