@@ -3,6 +3,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import ResponsePanel from "@/components/ResponsePanel";
 import { Send, Loader2, Bot, User } from "lucide-react";
 import pixoraLogo from "@/assets/pixora-logo.png";
+import { CanvasRevealEffect } from "@/components/ui/canvas-effect";
 
 const WEBHOOK_URL =
   "https://n8n.srv1333057.hstgr.cloud/webhook/8af48b14-3217-4593-8662-084d8a28ffc4/chat";
@@ -121,14 +122,24 @@ const Index = () => {
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
         <div className="mx-auto max-w-2xl space-y-4">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <img src={pixoraLogo} alt="Pixora" className="h-14 w-14 rounded-full object-cover" />
-            </div>
-            <h2 className="text-lg font-semibold text-foreground">How can I help you?</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Send a message or request an AI-generated image
-              </p>
+            <div className="relative flex flex-col items-center justify-center py-20 text-center">
+              <div className="absolute inset-0 h-[300px] w-full overflow-hidden rounded-2xl">
+                <CanvasRevealEffect
+                  animationSpeed={0.4}
+                  colors={[[59, 130, 246], [139, 92, 246]]}
+                  dotSize={3}
+                  containerClassName="bg-transparent"
+                />
+              </div>
+              <div className="relative z-10">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto">
+                  <img src={pixoraLogo} alt="Pixora" className="h-14 w-14 rounded-full object-cover" />
+                </div>
+                <h2 className="text-lg font-semibold text-foreground">How can I help you?</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Send a message or request an AI-generated image
+                </p>
+              </div>
             </div>
           )}
 
