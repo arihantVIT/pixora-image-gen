@@ -109,7 +109,7 @@ const Index = () => {
       <div className="fixed inset-0 z-0">
         <ShaderBackground />
       </div>
-      <div className="relative z-10 flex h-screen flex-col bg-background/80 backdrop-blur-sm">
+      <div className="relative z-10 flex h-screen flex-col bg-background/60 backdrop-blur-sm">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
