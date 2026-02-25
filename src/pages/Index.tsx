@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
 import ResponsePanel from "@/components/ResponsePanel";
-import { Send, Loader2, Bot, User } from "lucide-react";
+import { Send, Loader2, User } from "lucide-react";
 import pixoraLogo from "@/assets/pixora-logo.png";
-import { CanvasRevealEffect } from "@/components/ui/canvas-effect";
+import ShaderBackground from "@/components/ui/shader-background";
 
 const WEBHOOK_URL =
   "https://n8n.srv1333057.hstgr.cloud/webhook/8af48b14-3217-4593-8662-084d8a28ffc4/chat";
@@ -124,12 +124,7 @@ const Index = () => {
           {messages.length === 0 && (
             <div className="relative flex flex-col items-center justify-center py-20 text-center">
               <div className="absolute inset-0 h-[300px] w-full overflow-hidden rounded-2xl">
-                <CanvasRevealEffect
-                  animationSpeed={0.4}
-                  colors={[[59, 130, 246], [139, 92, 246]]}
-                  dotSize={3}
-                  containerClassName="bg-transparent"
-                />
+                <ShaderBackground />
               </div>
               <div className="relative z-10">
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto">
