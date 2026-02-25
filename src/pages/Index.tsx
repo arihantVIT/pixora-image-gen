@@ -105,7 +105,11 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-background">
+    <div className="relative flex h-screen flex-col">
+      <div className="fixed inset-0 z-0">
+        <ShaderBackground />
+      </div>
+      <div className="relative z-10 flex h-screen flex-col bg-background/80 backdrop-blur-sm">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
@@ -122,19 +126,14 @@ const Index = () => {
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
         <div className="mx-auto max-w-2xl space-y-4">
           {messages.length === 0 && (
-            <div className="relative flex flex-col items-center justify-center py-20 text-center">
-              <div className="absolute inset-0 h-[300px] w-full overflow-hidden rounded-2xl">
-                <ShaderBackground />
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto">
+                <img src={pixoraLogo} alt="Pixora" className="h-14 w-14 rounded-full object-cover" />
               </div>
-              <div className="relative z-10">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto">
-                  <img src={pixoraLogo} alt="Pixora" className="h-14 w-14 rounded-full object-cover" />
-                </div>
-                <h2 className="text-lg font-semibold text-foreground">How can I help you?</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Send a message or request an AI-generated image
-                </p>
-              </div>
+              <h2 className="text-lg font-semibold text-foreground">How can I help you?</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Send a message or request an AI-generated image
+              </p>
             </div>
           )}
 
@@ -208,6 +207,7 @@ const Index = () => {
             )}
           </button>
         </form>
+      </div>
       </div>
     </div>
   );
